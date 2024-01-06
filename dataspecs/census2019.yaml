@@ -1,0 +1,31 @@
+# This dataspec has a single group.
+!DataSpec
+dataset: ACS5
+vintage: 2019
+geography:
+  # All tracts contained within the geography described below.
+  state: '*'
+  county: '*'
+  tract: '*'
+contained_within:
+  # New York-Newark-Jersey City
+  metropolitan_statistical_area_micropolitan_statistical_area: "35620"
+# Get the leaves of the population by race group.
+# See https://api.census.gov/data/2019/acs/acs5/groups/B03002.html
+specs:
+  - !VariableList
+    variables:
+      - NAME
+  - !VariableList
+    # We also want one intermediate node of hispanic or latino regardless of race.
+    variables:
+      - B03002_012E
+    # The denominator does not work until https://github.com/vengroff/censusdis/issues/228
+    # is fixed.
+    # denominator: B03002_001E
+    # frac_prefix: frac_
+  - !Group
+    group: B03002
+    leaves_only: true
+    denominator: B03002_001E
+    frac_prefix: frac_
