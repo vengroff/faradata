@@ -4,11 +4,11 @@ dataset: ACS5
 vintage: 2019
 geography:
   # All tracts contained within the geography described below.
-  state: _STATE_
+  state: '_STATE_'
   county: '*'
   tract: '*'
 contained_within:
-  state: _STATE_
+  state: '_STATE_'
   place: "*"
 # Get the leaves of the population by race group.
 # See https://api.census.gov/data/2019/acs/acs5/groups/B03002.html

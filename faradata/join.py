@@ -30,7 +30,7 @@ def main():
     logger.info(f"Joining {left_file} to {right_file} to produce {output_file}.")
 
     join_on = ['STATE', 'COUNTY', 'TRACT']
-    dtype = {col: str for col in join_on}
+    dtype = {col: str for col in join_on + ['PLACE']}
 
     logger.info(f"Reading {left_file}.")
     df_left = pd.read_csv(left_file, header=0, dtype=dtype)
