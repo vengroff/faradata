@@ -1,4 +1,11 @@
 
+STATES := AL AK AZ AR CA CO CT DC DE FL \
+		  GA HI ID IL IN IA KS KY LA ME \
+		  MD MA MN MS MI MO MT NE NV NH \
+		  NJ NM NY NC ND OH OK OR PA RI \
+		  SC SD TN TX UT VT VA WA WV WI \
+		  WY
+
 LOG := INFO
 
 RAW_DIR := ./raw
@@ -9,13 +16,13 @@ CENSUS_YAML := $(DATASPECS)/census2019.yaml
 
 WORKING_DIR := ./working
 FARA_CSV := $(WORKING_DIR)/fara.csv
-CENSUS_DATA := $(WORKING_DIR)/census2019.csv
+CENSUS_DATA := $(STATES:%=$(WORKING_DIR)/census-%.csv)
 
-DATASET := $(WORKING_DIR)/faracen.csv
+DATASETS := $(STATES:%=$(WORKING_DIR)/faracen-%.csv)
 
-.PHONY: all clean csv census dataset
+.PHONY: all clean csv census datasets
 
-all: dataset
+all: datasets
 
 clean:
 	rm -rf $(WORKING_DIR)
@@ -24,15 +31,18 @@ csv: $(FARA_CSV)
 
 census: $(CENSUS_DATA)
 
-dataset: $(DATASET)
+datasets: $(DATASETS)
 
 $(FARA_CSV): $(FARA_XLS)
 	mkdir -p $(@D)
 	python -m faradata.faracsv --log $(LOG) -o $@ $<
 
-$(CENSUS_DATA): $(CENSUS_YAML)
-	mkdir -p $(@D)
+$(WORKING_DIR)/census-%.csv: $(WORKING_DIR)/%.yaml
 	censusdis download -o $@ $<
 
-$(DATASET): $(CENSUS_DATA) $(FARA_CSV)
-	python -m faradata.join --log $(LOG) -o $@ $(CENSUS_DATA) $(FARA_CSV)
+$(WORKING_DIR)/%.yaml: $(CENSUS_YAML)
+	mkdir -p $(@D)
+	sed 's/_STATE_/$(basename ${@F})/g' $< > $@
+
+$(WORKING_DIR)/faracen-%.csv: $(WORKING_DIR)/census-%.csv $(FARA_CSV)
+	python -m faradata.join --log $(LOG) --map $(WORKING_DIR)/map-$*.png --map-y lapophalf -o $@ $(WORKING_DIR)/census-$*.csv $(FARA_CSV)

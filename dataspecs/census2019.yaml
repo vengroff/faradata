@@ -4,12 +4,12 @@ dataset: ACS5
 vintage: 2019
 geography:
   # All tracts contained within the geography described below.
-  state: '*'
+  state: _STATE_
   county: '*'
   tract: '*'
 contained_within:
-  # New York-Newark-Jersey City
-  metropolitan_statistical_area_micropolitan_statistical_area: "35620"
+  state: _STATE_
+  place: "*"
 # Get the leaves of the population by race group.
 # See https://api.census.gov/data/2019/acs/acs5/groups/B03002.html
 specs:
