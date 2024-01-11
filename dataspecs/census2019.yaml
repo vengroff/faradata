@@ -29,3 +29,9 @@ specs:
     leaves_only: true
     denominator: B03002_001E
     frac_prefix: frac_
+  - !VariableList
+    # The number of households with no vehicle.
+    variables:
+      - B08201_002E
+    denominator: B08201_001E
+    frac_prefix: frac_
